@@ -1,0 +1,20 @@
+# Ustawienia wyszukiwarki.
+#
+# _legacy_controller wskazuje zakładkę silnika, bo moduł bez niego i tak nie działa
+# (zadeklarowana zależność). Dzięki temu nie zakładamy własnej zakładki tylko po to,
+# żeby PrestaShop miał gdzie sprawdzić uprawnienia.
+quince_search_settings:
+  path: quince/search
+  methods: [GET]
+  defaults:
+    _controller: Quince\Search\Controller\Admin\SettingsController::indexAction
+    _legacy_controller: 'AdminQuince'
+    _legacy_link: 'AdminQuince'
+
+quince_search_settings_save:
+  path: quince/search/save
+  methods: [POST]
+  defaults:
+    _controller: Quince\Search\Controller\Admin\SettingsController::saveAction
+    _legacy_controller: 'AdminQuince'
+    _legacy_link: 'AdminQuince:save'

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en-US" target-language="pl-PL" datatype="plaintext" original="ModulesQuincesearchAdmin">
+    <body>
+
+      <trans-unit id="quince.search.name">
+        <source>Quince Search</source>
+        <target>Quince Search</target>
+      </trans-unit>
+      <trans-unit id="quince.search.desc">
+        <source>Search with a scope filter and product suggestions. Requires Quince Engine.</source>
+        <target>Wyszukiwarka z wyborem zakresu i podpowiedziami produktów. Wymaga Quince Engine.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.feature">
+        <source>Quince search</source>
+        <target>Wyszukiwarka Quince</target>
+      </trans-unit>
+      <trans-unit id="quince.search.saved">
+        <source>Settings saved.</source>
+        <target>Ustawienia zapisane.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.save">
+        <source>Save changes</source>
+        <target>Zapisz zmiany</target>
+      </trans-unit>
+      <trans-unit id="quince.search.intro">
+        <source>Where the store lets customers search, and what happens while they type.</source>
+        <target>Gdzie sklep pozwala szukać i co się dzieje w trakcie pisania.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.scopes">
+        <source>Search scopes</source>
+        <target>Zakresy wyszukiwania</target>
+      </trans-unit>
+      <trans-unit id="quince.search.scopes_desc">
+        <source>The list next to the search field. Leave one scope on and the list disappears. There is nothing to choose from.</source>
+        <target>Lista obok pola wyszukiwania. Zostaw jeden zakres włączony, a lista zniknie. Nie ma z czego wybierać.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.scope">
+        <source>Scope</source>
+        <target>Zakres</target>
+      </trans-unit>
+      <trans-unit id="quince.search.shown">
+        <source>Shown</source>
+        <target>Pokazywany</target>
+      </trans-unit>
+      <trans-unit id="quince.search.scopes_note">
+        <source>Names are what the customer reads, so they can differ from the technical meaning, “By code or SKU” can just as well be called “By part number”.</source>
+        <target>Nazwy czyta klient, więc mogą się różnić od znaczenia technicznego, „Po kodzie lub SKU” można równie dobrze nazwać „Po numerze katalogowym”.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.everywhere">
+        <source>Everywhere</source>
+        <target>Wszędzie</target>
+      </trans-unit>
+      <trans-unit id="quince.search.in_name">
+        <source>In product name</source>
+        <target>W nazwie produktu</target>
+      </trans-unit>
+      <trans-unit id="quince.search.by_code">
+        <source>By code or SKU</source>
+        <target>Po kodzie lub SKU</target>
+      </trans-unit>
+      <trans-unit id="quince.search.in_category">
+        <source>In category</source>
+        <target>W kategorii</target>
+      </trans-unit>
+      <trans-unit id="quince.search.by_brand">
+        <source>By brand</source>
+        <target>Po marce</target>
+      </trans-unit>
+      <trans-unit id="quince.search.suggest">
+        <source>Suggestions while typing</source>
+        <target>Podpowiedzi w trakcie pisania</target>
+      </trans-unit>
+      <trans-unit id="quince.search.suggest_on">
+        <source>Suggestions on</source>
+        <target>Podpowiedzi włączone</target>
+      </trans-unit>
+      <trans-unit id="quince.search.start_after">
+        <source>Start after</source>
+        <target>Zacznij po</target>
+      </trans-unit>
+      <trans-unit id="quince.search.start_after_hint">
+        <source>Characters typed before the store starts looking. Below three the store queries the database on almost every keystroke.</source>
+        <target>Liczba znaków, po której sklep zaczyna szukać. Poniżej trzech sklep pyta bazę przy niemal każdym naciśnięciu klawisza.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.how_many">
+        <source>How many products</source>
+        <target>Ile produktów</target>
+      </trans-unit>
+      <trans-unit id="quince.search.how_many_hint">
+        <source>A longer list covers the page and stops being a shortcut.</source>
+        <target>Dłuższa lista zasłania stronę i przestaje być skrótem.</target>
+      </trans-unit>
+
+      <trans-unit id="quince.search.add_scope">
+        <source>Add scope</source>
+        <target>Dodaj zakres</target>
+      </trans-unit>
+      <trans-unit id="quince.search.remove_scope">
+        <source>Remove scope</source>
+        <target>Usuń zakres</target>
+      </trans-unit>
+      <trans-unit id="quince.search.where">
+        <source>Where to look</source>
+        <target>Gdzie szukać</target>
+      </trans-unit>
+      <trans-unit id="quince.search.label_shown">
+        <source>Name shown to customers</source>
+        <target>Nazwa pokazywana klientom</target>
+      </trans-unit>
+      <trans-unit id="quince.search.url_key">
+        <source>Key in the address</source>
+        <target>Klucz w adresie</target>
+      </trans-unit>
+      <trans-unit id="quince.search.url_key_hint">
+        <source>Lets the scope live in a link:</source>
+        <target>Pozwala umieścić zakres w odnośniku:</target>
+      </trans-unit>
+      <trans-unit id="quince.search.which_feature">
+        <source>Which feature</source>
+        <target>Która cecha</target>
+      </trans-unit>
+      <trans-unit id="quince.search.pick_feature">
+        <source>Pick a feature</source>
+        <target>Wybierz cechę</target>
+      </trans-unit>
+      <trans-unit id="quince.search.no_features">
+        <source>This store has no product features yet.</source>
+        <target>Ten sklep nie ma jeszcze cech produktu.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.no_scopes">
+        <source>No scopes. The search field will look everywhere.</source>
+        <target>Brak zakresów. Pole wyszukiwania będzie szukało wszędzie.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.by_feature">
+        <source>By product feature</source>
+        <target>Po cesze produktu</target>
+      </trans-unit>
+      <trans-unit id="quince.search.empty_title">
+        <source>Nothing found page</source>
+        <target>Strona bez wyników</target>
+      </trans-unit>
+      <trans-unit id="quince.search.section_on">
+        <source>Section on</source>
+        <target>Sekcja włączona</target>
+      </trans-unit>
+      <trans-unit id="quince.search.hints">
+        <source>Hints for the customer</source>
+        <target>Wskazówki dla klienta</target>
+      </trans-unit>
+      <trans-unit id="quince.search.hints_hint">
+        <source>One per line. Each line becomes a separate point.</source>
+        <target>Po jednej w wierszu. Każdy wiersz staje się osobnym punktem.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.check_spelling">
+        <source>Check the spelling</source>
+        <target>Sprawdź pisownię</target>
+      </trans-unit>
+      <trans-unit id="quince.search.cats_heading">
+        <source>Heading above the categories</source>
+        <target>Nagłówek nad kategoriami</target>
+      </trans-unit>
+      <trans-unit id="quince.search.popular_cats">
+        <source>Popular categories</source>
+        <target>Popularne kategorie</target>
+      </trans-unit>
+      <trans-unit id="quince.search.which_cats">
+        <source>Which categories</source>
+        <target>Które kategorie</target>
+      </trans-unit>
+      <trans-unit id="quince.search.most_popular">
+        <source>Most popular</source>
+        <target>Najpopularniejsze</target>
+      </trans-unit>
+      <trans-unit id="quince.search.by_hand">
+        <source>Picked by hand</source>
+        <target>Wybrane ręcznie</target>
+      </trans-unit>
+      <trans-unit id="quince.search.how_many_cats">
+        <source>How many categories</source>
+        <target>Ile kategorii</target>
+      </trans-unit>
+      <trans-unit id="quince.search.cats_as_icons">
+        <source>Category images as icons</source>
+        <target>Zdjęcia kategorii jako ikony</target>
+      </trans-unit>
+      <trans-unit id="quince.search.tint">
+        <source>Tint them to a single colour</source>
+        <target>Zabarw je na jeden kolor</target>
+      </trans-unit>
+      <trans-unit id="quince.search.tint_hint">
+        <source>For stores whose category images are line drawings rather than photos.</source>
+        <target>Dla sklepów, w których zdjęcia kategorii to rysunki, a nie fotografie.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.cats_to_show">
+        <source>Categories to show</source>
+        <target>Kategorie do pokazania</target>
+      </trans-unit>
+      <trans-unit id="quince.search.cats_order">
+        <source>Order follows the catalogue, not the order of picking.</source>
+        <target>Kolejność wynika z katalogu, a nie z kolejności zaznaczania.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.no_cats">
+        <source>This store has no categories yet.</source>
+        <target>Ten sklep nie ma jeszcze kategorii.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.characters">
+        <source>characters</source>
+        <target>znaków</target>
+      </trans-unit>
+      <trans-unit id="quince.search.below_three">
+        <source>Below three the store queries the database on almost every keystroke.</source>
+        <target>Poniżej trzech sklep pyta bazę przy niemal każdym naciśnięciu klawisza.</target>
+      </trans-unit>
+
+      <trans-unit id="quince.search.cats_title_hint">
+        <source>Shown above the category tiles.</source>
+        <target>Pokazywany nad kafelkami kategorii.</target>
+      </trans-unit>
+
+      <trans-unit id="quince.search.intro3">
+        <source>Set the scopes customers can search in, the suggestions shown while typing and the page they land on when nothing is found.</source>
+        <target>Ustaw zakresy, w których klient może szukać, podpowiedzi w trakcie pisania i stronę, na którą trafia, gdy nic nie znajdzie.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.scopes_desc3">
+        <source>Name each scope and choose which of them appear in the list next to the search field.</source>
+        <target>Nazwij każdy zakres i wybierz, które z nich pojawiają się na liście obok pola wyszukiwania.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.empty_desc2">
+        <source>Write the hints and pick the categories shown to a customer who found nothing.</source>
+        <target>Napisz wskazówki i wybierz kategorie pokazywane klientowi, który nic nie znalazł.</target>
+      </trans-unit>
+      <trans-unit id="quince.search.suggest_desc2">
+        <source>Set when the store starts looking and how many products it offers under the field.</source>
+        <target>Ustaw, kiedy sklep zaczyna szukać i ile produktów proponuje pod polem.</target>
+      </trans-unit>
+
+      <trans-unit id="quince.search.new1">
+        <source>Categories in one row</source>
+        <target>Kategorii w jednym wierszu</target>
+      </trans-unit>
+      <trans-unit id="quince.search.new2">
+        <source>The rest moves to the next row, centred under the first one.</source>
+        <target>Reszta przechodzi do kolejnego wiersza, wyśrodkowanego pod pierwszym.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

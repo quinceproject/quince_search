@@ -1,0 +1,23 @@
+{
+    "name": "quinceproject/search",
+    "description": "Quince Search: search with a scope filter and product suggestions",
+    "type": "prestashop-module",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "name": "Quince Project",
+            "email": "quinceproject@proton.me"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Quince\\Search\\": "src/"
+        }
+    },
+    "config": {
+        "prepend-autoloader": false
+    }
+}

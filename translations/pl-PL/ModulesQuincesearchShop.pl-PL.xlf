@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en-US" target-language="pl-PL" datatype="plaintext" original="ModulesQuincesearchShop">
+    <body>
+
+      <!-- Nazwy zakresów wyszukiwania, kiedy sklep nie wpisał własnych -->
+      <trans-unit id="quince.search.zakres.wszedzie">
+        <source>Everywhere</source>
+        <target>Wszędzie</target>
+      </trans-unit>
+      <trans-unit id="quince.search.zakres.nazwa">
+        <source>In product name</source>
+        <target>W nazwie produktu</target>
+      </trans-unit>
+      <trans-unit id="quince.search.zakres.kod">
+        <source>By code or SKU</source>
+        <target>Po kodzie lub SKU</target>
+      </trans-unit>
+      <trans-unit id="quince.search.zakres.kategoria">
+        <source>In category</source>
+        <target>W kategorii</target>
+      </trans-unit>
+      <trans-unit id="quince.search.zakres.marka">
+        <source>By brand</source>
+        <target>Po marce</target>
+      </trans-unit>
+      <trans-unit id="quince.search.zakres.cecha">
+        <source>By product feature</source>
+        <target>Po cesze produktu</target>
+      </trans-unit>
+
+    </body>
+  </file>
+</xliff>

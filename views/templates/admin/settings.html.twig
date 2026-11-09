@@ -1,0 +1,351 @@
+{# Panel modułu w stylistyce silnika: ten sam layout, te same makra pól.
+   Moduł nie ma własnego CSS-u ani własnego sidebara, bierze je stąd. #}
+{% extends '@Modules/quince_engine/views/templates/admin/layout.html.twig' %}
+{% import '@Modules/quince_engine/views/templates/admin/_macros/icons.html.twig' as icons %}
+{% import '@Modules/quince_engine/views/templates/admin/_macros/tree.html.twig' as tree %}
+{% import '@Modules/quince_engine/views/templates/admin/_macros/fields.html.twig' as fields %}
+
+{% trans_default_domain 'Modules.Quincesearch.Admin' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Kolejność ma znaczenie: wtyczka przeciągania musi wejść przed rdzeniem Alpine,
+       inaczej rdzeń wystartuje bez niej i lista zakresów nie da się przestawić. #}
+    <script src="{{ asset('../modules/quince_engine/views/js/vendor/alpine-sort.min.js') ~ qcVer }}" defer></script>
+    {{ tree.assets(qcVer) }}
+    <script src="{{ asset('../modules/quince_engine/views/js/vendor/alpine.min.js') ~ qcVer }}" defer></script>
+{% endblock %}
+
+{% block quince_intro %}
+    <div class="qc-alert qc-alert-info">
+        {{ icons.icon('info', 18, 'qc-alert-icon') }}
+        <div>
+            {{ 'Set the scopes customers can search in, the suggestions shown while typing and the page they land on when nothing is found.'|trans }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block quince_actions %}
+    <button type="submit" form="quince-search" class="qc-btn qc-btn-primary">
+        {{ icons.icon('check', 14) }} {{ 'Save changes'|trans }}
+    </button>
+{% endblock %}
+
+{% block quince_body %}
+{{ tree.dane('QUINCE_KATEGORIE', categories, null)|raw }}
+
+<form id="quince-search" method="post" action="{{ path('quince_search_settings_save') }}" class="qc-stack"
+      x-data="quinceScopes()">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('quince_search_settings_save') }}">
+
+    {# ── Zakresy ── #}
+    <div class="qc-card">
+        <div class="qc-card-head">
+            <div>
+                <div class="qc-card-title">{{ 'Search scopes'|trans }}</div>
+                <div class="qc-card-desc">{{ 'Name each scope and choose which of them appear in the list next to the search field.'|trans }}</div>
+            </div>
+            <button type="button" class="qc-btn qc-btn-outline" @click="add()">
+                {{ icons.icon('plus', 14) }} {{ 'Add scope'|trans }}
+            </button>
+        </div>
+
+        <div class="qc-card-body">
+            <div class="qc-repeater" x-sort="move($item, $position)">
+                <template x-for="(scope, index) in scopes" :key="scope.uid">
+                    <div class="qc-rep-row" x-sort:item="scope.uid">
+                        <div class="qc-rep-row-head">
+                            <span class="qc-rep-handle" x-sort:handle>{{ icons.icon('drag', 14) }}</span>
+
+                            <span class="qc-rep-name">
+                                <span x-text="label(scope)"></span>
+                                <span class="qc-rep-sub" x-text="typeLabels[scope.type]"></span>
+                            </span>
+
+                            <div class="qc-rep-actions">
+                                <label class="qc-toggle qc-toggle-sm">
+                                    <input type="hidden" :name="'scope[' + index + '][enabled]'" value="0">
+                                    <input type="checkbox" :name="'scope[' + index + '][enabled]'" value="1"
+                                           x-model="scope.enabled">
+                                    <span class="qc-toggle-track"></span>
+                                </label>
+
+                                <button type="button" class="qc-icon-btn" @click="scope.open = !scope.open"
+                                        :aria-expanded="scope.open">
+                                    <svg class="qc-icon" width="14" height="14" viewBox="0 0 16 16" fill="none"
+                                         stroke="currentColor" stroke-width="2" aria-hidden="true"
+                                         :style="scope.open && 'transform:rotate(180deg)'"><path d="m4 6 4 4 4-4"/></svg>
+                                </button>
+
+                                <button type="button" class="qc-icon-btn qc-danger" @click="remove(index)"
+                                        :title="'{{ 'Remove scope'|trans }}'">
+                                    {{ icons.icon('trash', 14) }}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="qc-rep-body" x-show="scope.open" x-cloak>
+                            <div class="qc-form-grid qc-form-grid-3">
+                                <div class="qc-field">
+                                    <label class="qc-label">{{ 'Where to look'|trans }}</label>
+                                    <div class="qc-select-wrap">
+                                        <select class="qc-field-base qc-select qc-focusable"
+                                                :name="'scope[' + index + '][type]'" x-model="scope.type">
+                                            {% for type, label in typeLabels %}
+                                                <option value="{{ type }}">{{ label|trans }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        {{ icons.icon('chevronDown', 14, 'qc-select-chevron') }}
+                                    </div>
+                                </div>
+
+                                <div class="qc-field">
+                                    <label class="qc-label">{{ 'Name shown to customers'|trans }}</label>
+                                    <div class="qc-multilang-row">
+                                        <template x-for="lang in languages" :key="lang.id">
+                                            <input type="text" class="qc-field-base qc-focusable"
+                                                   :name="'scope[' + index + '][labels][' + lang.id + ']'"
+                                                   x-show="scope.lang === lang.id"
+                                                   x-model="scope.labels[lang.id]"
+                                                   :placeholder="typeLabels[scope.type]">
+                                        </template>
+
+                                        <button type="button" class="qc-lang-toggle"
+                                                @click="scope.langOpen = !scope.langOpen">
+                                            <span class="qc-lang-dot"
+                                                  :class="String(scope.labels[scope.lang] || '').trim() && 'qc-complete'"></span>
+                                            <span x-text="languages.find(l => l.id === scope.lang).iso"></span>
+                                            <svg class="qc-icon" width="12" height="12" viewBox="0 0 16 16" fill="none"
+                                                 stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+                                        </button>
+
+                                        <div class="qc-lang-menu" x-show="scope.langOpen" x-cloak
+                                             @click.outside="scope.langOpen = false">
+                                            <template x-for="lang in languages" :key="lang.id">
+                                                <div class="qc-lang-row" :class="scope.lang === lang.id && 'qc-current'"
+                                                     @click="scope.lang = lang.id; scope.langOpen = false">
+                                                    <span class="qc-lang-dot"
+                                                          :class="String(scope.labels[lang.id] || '').trim() && 'qc-complete'"></span>
+                                                    <span class="qc-lang-row-name" x-text="lang.name"></span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="qc-field">
+                                    <label class="qc-label">{{ 'Key in the address'|trans }}</label>
+                                    <input type="text" class="qc-field-base qc-focusable"
+                                           :name="'scope[' + index + '][key]'" x-model="scope.key"
+                                           placeholder="all">
+                                    <div class="qc-hint">
+                                        {{ 'Lets the scope live in a link:'|trans }}
+                                        <code>?q_scope=<span x-text="scope.key || 'all'"></span></code>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Cecha produktu potrzebuje wskazania, o którą chodzi.
+                               Pole pojawia się tylko dla tego typu, pusty wybieracz
+                               przy pozostałych sugerowałby, że czegoś brakuje. #}
+                            <div class="qc-field" x-show="typesWithTarget.includes(scope.type)" x-cloak
+                                 style="margin-block-start:14px;max-inline-size:340px">
+                                <label class="qc-label">{{ 'Which feature'|trans }}</label>
+                                <div class="qc-select-wrap">
+                                    <select class="qc-field-base qc-select qc-focusable"
+                                            :name="'scope[' + index + '][target]'" x-model="scope.target">
+                                        <option value="">{{ 'Pick a feature'|trans }}</option>
+                                        {% for feature in features %}
+                                            <option value="{{ feature.id }}">{{ feature.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {{ icons.icon('chevronDown', 14, 'qc-select-chevron') }}
+                                </div>
+                                {% if features is empty %}
+                                    <div class="qc-hint">{{ 'This store has no product features yet.'|trans }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <div class="qc-empty" x-show="!scopes.length" x-cloak>
+                <div class="qc-empty-text">{{ 'No scopes. The search field will look everywhere.'|trans }}</div>
+            </div>
+
+            <div class="qc-field-note">
+                {{ 'Names are what the customer reads, so they can differ from the technical meaning, “By code or SKU” can just as well be called “By part number”.'|trans }}
+            </div>
+        </div>
+    </div>
+
+    {# ── Puste wyniki ── #}
+    <div class="qc-card" x-data="{ on: {{ emptyState.enabled ? 'true' : 'false' }} }">
+        <div class="qc-card-head">
+            <div>
+                <div class="qc-card-title">{{ 'Nothing found page'|trans }}</div>
+                <div class="qc-card-desc">{{ 'Write the hints and pick the categories shown to a customer who found nothing.'|trans }}</div>
+            </div>
+            <label class="qc-toggle">
+                <input type="hidden" name="empty_enabled" value="0">
+                <input type="checkbox" name="empty_enabled" value="1" x-model="on">
+                <span class="qc-toggle-track"></span>
+                <span class="qc-toggle-text">{{ 'Section on'|trans }}</span>
+            </label>
+        </div>
+
+        <div class="qc-card-body qc-disabled-area" :class="!on && 'is-off'" :inert="!on">
+
+            {# Wiersz pierwszy: dwie rzeczy, ktore klient czyta. #}
+            <div class="qc-form-grid qc-form-grid-2">
+                {{ fields.multilangArea(
+                    'empty_tips',
+                    'Hints for the customer'|trans,
+                    languages,
+                    emptyState.tips,
+                    'Check the spelling'|trans,
+                    'One per line. Each line becomes a separate point.'|trans,
+                    6
+                ) }}
+
+                {{ fields.multilangArea(
+                    'empty_cats_title',
+                    'Heading above the categories'|trans,
+                    languages,
+                    emptyState.cats_title,
+                    'Popular categories'|trans,
+                    'Shown above the category tiles.'|trans,
+                    3
+                ) }}
+            </div>
+
+            {# Ile kafelkow staje obok siebie. Dluzsza lista lamie sie na kolejne
+               wiersze, wiec to ustawienie decyduje tez o ich liczbie. #}
+            <div class="qc-field" style="margin-block-start:18px; max-inline-size:360px"
+                 x-data="{ wrzedzie: {{ emptyState.cats_per_row }} }">
+                <label class="qc-label" for="q-cats-row">{{ 'Categories in one row'|trans }}</label>
+                <div class="qc-slider-row">
+                    <input type="range" id="q-cats-row" class="qc-slider"
+                           min="{{ limits.catsPerRowMin }}" max="{{ limits.catsPerRowMax }}" step="1"
+                           name="empty_cats_per_row" x-model.number="wrzedzie">
+                    <span class="qc-slider-val" x-text="wrzedzie"></span>
+                </div>
+                <div class="qc-hint">{{ 'The rest moves to the next row, centred under the first one.'|trans }}</div>
+            </div>
+
+            {# Drzewo kategorii na pelna szerokosc, bo nazwy kategorii bywaja
+               dlugie i w polowie karty sie lamia. #}
+            <div class="qc-field" style="margin-block-start:18px">
+                {{ tree.szukajka('QUINCE_KATEGORIE', emptyState.cats_ids, 'empty_cats_ids', 'Categories to show'|trans, true) }}
+                <div class="qc-hint">{{ 'Order follows the catalogue, not the order of picking.'|trans }}</div>
+            </div>
+
+            {# Wiersz czwarty: rzecz o wygladzie kafelkow, wiec na koncu. #}
+            <div class="qc-field" style="margin-block-start:18px">
+                <label class="qc-label">{{ 'Category images as icons'|trans }}</label>
+                {{ fields.toggle('empty_icon_mode', emptyState.icon_mode, 'Tint them to a single colour'|trans) }}
+                <div class="qc-hint">{{ 'For stores whose category images are line drawings rather than photos.'|trans }}</div>
+            </div>
+        </div>
+    </div>
+
+    {# ── Podpowiedzi ── #}
+    <div class="qc-card" x-data="{ on: {{ settings.SUGGEST_ENABLED == '1' ? 'true' : 'false' }} }">
+        <div class="qc-card-head">
+            <div>
+                <div class="qc-card-title">{{ 'Suggestions while typing'|trans }}</div>
+                <div class="qc-card-desc">{{ 'Set when the store starts looking and how many products it offers under the field.'|trans }}</div>
+            </div>
+            <label class="qc-toggle">
+                <input type="hidden" name="SUGGEST_ENABLED" value="0">
+                <input type="checkbox" name="SUGGEST_ENABLED" value="1" x-model="on">
+                <span class="qc-toggle-track"></span>
+                <span class="qc-toggle-text">{{ 'Suggestions on'|trans }}</span>
+            </label>
+        </div>
+
+        <div class="qc-card-body qc-disabled-area" :class="!on && 'is-off'" :inert="!on">
+            <div class="qc-form-grid qc-form-grid-2">
+                <div class="qc-field" x-data="{ v: {{ settings.SUGGEST_MIN_CHARS }} }">
+                    <label class="qc-label" for="q-min">{{ 'Start after'|trans }}</label>
+                    <div class="qc-slider-row">
+                        <input type="range" id="q-min" class="qc-slider" min="1" max="6" step="1"
+                               name="SUGGEST_MIN_CHARS" x-model.number="v">
+                        <span class="qc-slider-val"><span x-text="v"></span> {{ 'characters'|trans }}</span>
+                    </div>
+                    <div class="qc-hint">{{ 'Below three the store queries the database on almost every keystroke.'|trans }}</div>
+                </div>
+
+                <div class="qc-field" x-data="{ v: {{ settings.SUGGEST_LIMIT }} }">
+                    <label class="qc-label" for="q-limit">{{ 'How many products'|trans }}</label>
+                    <div class="qc-slider-row">
+                        <input type="range" id="q-limit" class="qc-slider" min="3" max="12" step="1"
+                               name="SUGGEST_LIMIT" x-model.number="v">
+                        <span class="qc-slider-val" x-text="v"></span>
+                    </div>
+                    <div class="qc-hint">{{ 'A longer list covers the page and stops being a shortcut.'|trans }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+/* Stan listy zakresów.
+   Kolejność wierszy jest kolejnością pól w formularzu, więc przeciągnięcie
+   zmienia nazwy pól (`scope[0]`, `scope[1]`…) i zapis dostaje właściwy porządek
+   bez osobnego pola z pozycją. */
+function quinceScopes() {
+    const LANGUAGES = {{ languages|map(l => {id: l.id_lang, name: l.name, iso: l.iso_code|upper})|json_encode|raw }};
+    const TYPE_LABELS = {{ typeLabels|json_encode|raw }};
+    const SAVED = {{ scopes|json_encode|raw }};
+
+    let counter = 0;
+
+    const build = (scope) => ({
+        uid: 'scope-' + (++counter),
+        key: scope.key || '',
+        type: scope.type || 'all',
+        target: scope.target ? String(scope.target) : '',
+        labels: Object.assign({}, scope.labels || {}),
+        enabled: scope.enabled !== false,
+        open: false,
+        lang: LANGUAGES[0].id,
+        langOpen: false,
+    });
+
+    return {
+        languages: LANGUAGES,
+        typeLabels: TYPE_LABELS,
+        typesWithTarget: {{ typesWithTarget|json_encode|raw }},
+        scopes: SAVED.map(build),
+
+        label(scope) {
+            const own = scope.labels[scope.lang] || Object.values(scope.labels).find(v => String(v).trim());
+
+            return own || TYPE_LABELS[scope.type] || scope.type;
+        },
+
+        add() {
+            const scope = build({ type: 'all', enabled: true });
+            scope.open = true;
+            this.scopes.push(scope);
+        },
+
+        remove(index) {
+            this.scopes.splice(index, 1);
+        },
+
+        move(uid, position) {
+            const from = this.scopes.findIndex(s => s.uid === uid);
+
+            if (from === -1) { return; }
+
+            this.scopes.splice(position, 0, this.scopes.splice(from, 1)[0]);
+        },
+    };
+}
+</script>
+{% endblock %}
