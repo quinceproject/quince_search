@@ -1,0 +1,72 @@
+# Release of a Quince module.
+#
+# Pushing a tag vX.Y.Z builds the installable ZIP and attaches it to a GitHub
+# release. The tag has to match $this->version in the module class, otherwise
+# the run stops before anything is published.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      MODULE: ${{ github.event.repository.name }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # One pinned Composer version for every Quince artefact: each module ships
+      # its own vendor/composer/InstalledVersions, and only the first one loaded
+      # is used by all of them.
+      - name: Set up PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:2.9.3
+          coverage: none
+
+      - name: Read version from tag
+        id: version
+        run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: |
+          composer install --no-dev --no-interaction --prefer-dist
+          composer dump-autoload -o --no-dev
+
+      - name: Build package
+        run: php .github/scripts/build-package.php "$MODULE" "${{ steps.version.outputs.value }}" build
+
+      - name: Lint PHP in the package
+        run: find "build/$MODULE" -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+
+      - name: Zip
+        run: cd build && zip -qr "../$MODULE.zip" "$MODULE"
+
+      # Release notes are the CHANGELOG section of this version.
+      - name: Release notes
+        run: |
+          awk -v v="${{ steps.version.outputs.value }}" '
+            $0 ~ "^## \\[" v "\\]" { on = 1; next }
+            on && /^## \[/ { exit }
+            on { print }
+          ' CHANGELOG.md > notes.md
+          test -s notes.md || { echo "CHANGELOG.md has no section for ${{ steps.version.outputs.value }}"; exit 1; }
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$MODULE.zip" \
+            --title "$MODULE ${{ steps.version.outputs.value }}" \
+            --notes-file notes.md
