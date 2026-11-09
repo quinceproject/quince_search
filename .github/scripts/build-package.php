@@ -18,7 +18,8 @@ declare(strict_types=1);
  *  1. checks that <version> matches `$this->version` in the module class,
  *  2. copies the module into <output_dir>/<module_name>/, leaving out repository files,
  *  3. renders config.xml and one config_<iso>.xml per translated language,
- *  4. puts an index.php stub into every directory of the package.
+ *  4. puts an index.php stub into every directory of the package,
+ *  5. denies web access to vendor/ with an .htaccess file.
  *
  * Nothing here needs PrestaShop: the values come from the module class and its
  * translation files, the same sources PrestaShop itself would read.
@@ -122,6 +123,28 @@ foreach (array_merge([$target], array_map('strval', iterator_to_array($dirs, fal
         file_put_contents($path . '/index.php', $stub);
         ++$stubs;
     }
+}
+
+// ---------------------------------------------------------------- 5. vendor/.htaccess
+
+// vendor/ is git-ignored, so its .htaccess never reaches the repository. Without it
+// Apache serves vendor/composer/installed.json and the rest to anyone who asks.
+$htaccess = <<<'HTACCESS'
+# Apache 2.2
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>
+
+# Apache 2.4
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+HTACCESS;
+
+if (is_dir($target . '/vendor')) {
+    file_put_contents($target . '/vendor/.htaccess', $htaccess);
 }
 
 echo "Built {$target} ({$classVersion}), " . $stubs . " index.php stubs\n";

@@ -4,6 +4,14 @@ All notable changes to this module are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versioning follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-11-09
+
+### Fixed
+
+- The release package denies web access to `vendor/`. The 0.1.0 package
+  shipped without `vendor/.htaccess`, so on Apache the Composer files in that folder
+  could be opened from a browser. The module code is unchanged.
+
 ## [0.1.0] - 2026-11-09
 
 ### Added
