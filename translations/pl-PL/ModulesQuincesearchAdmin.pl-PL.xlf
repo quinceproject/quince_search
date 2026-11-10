@@ -243,6 +243,10 @@
         <source>The rest moves to the next row, centred under the first one.</source>
         <target>Reszta przechodzi do kolejnego wiersza, wyśrodkowanego pod pierwszym.</target>
       </trans-unit>
+      <trans-unit id="quince.search.invalid_token">
+        <source>Invalid security token, please try again.</source>
+        <target>Nieprawidłowy token bezpieczeństwa, spróbuj ponownie.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
