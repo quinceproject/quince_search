@@ -26,15 +26,13 @@ use Tools;
  * Dwie drogi, bo to dwa różne pytania:
  *
  * 1. Zakres „wszędzie" pyta INDEKS rdzenia (`ps_search_word` + `ps_search_index`).
- *    To ten sam zbiór i ta sama kolejność, którą pokaże strona wyników — dzięki
- *    temu podpowiedź nie obiecuje czegoś, czego po wciśnięciu Enter nie widać.
- *    Indeks zna wagi pól ustawione w sklepie, odmianę słów i literówki, więc nie
- *    ma powodu pisać tego drugi raz gorzej.
+ *    To ten sam zbiór i ta sama kolejność, którą pokaże strona wyników, więc
+ *    podpowiedź nie obiecuje czegoś, czego po wciśnięciu Enter nie widać.
+ *    Indeks zna wagi pól ustawione w sklepie, odmianę słów i literówki.
  *
  * 2. Zakresy zawężone pytają WPROST tabele, których dotyczą: nazwę, kod, drzewo
  *    kategorii, markę albo wartość cechy. Indeks miesza wszystkie pola w jedną
- *    sumę wag, więc nie da się z niego wyciąć „tylko po kodzie" — a właśnie po to
- *    sklep taki zakres włącza.
+ *    sumę wag, więc nie da się z niego wyciąć „tylko po kodzie".
  *
  * Wspólne dla obu dróg jest to, co decyduje o tym, czy klient MOŻE zobaczyć
  * produkt: sklep, aktywność, widoczność w wyszukiwarce i prawo grupy klienta do
@@ -49,7 +47,7 @@ final class ProductFinder
     /**
      * Produkty pasujące do frazy, gotowe do pokazania.
      *
-     * @param array{type:string,target:?int}|null $scope null albo typ 'all' — cały katalog
+     * @param array{type:string,target:?int}|null $scope null albo typ 'all': cały katalog
      *
      * @return array<int,array<string,mixed>>
      */
@@ -93,8 +91,8 @@ final class ProductFinder
     /**
      * Droga przez indeks rdzenia.
      *
-     * Fraza rozbita na słowa, każde szukane jako początek wyrazu (`LIKE 'słowo%'`)
-     * — tak samo jak robi to rdzeń. Produkt musi trafić w KAŻDE słowo, inaczej
+     * Fraza rozbita na słowa, każde szukane jako początek wyrazu (`LIKE 'słowo%'`),
+     * tak samo jak robi to rdzeń. Produkt musi trafić w KAŻDE słowo, inaczej
      * „komputer iveco" pokazywałby wszystko, co ma w opisie samo „iveco".
      *
      * @return int[]
@@ -113,11 +111,11 @@ final class ProductFinder
             $warunki[] = "sw.word LIKE '" . pSQL($word) . "%'";
         }
 
-        // Score z `quince_search_score`, gdy moduł jest zainstalowany — celowo
+        // Score z `quince_search_score`, gdy moduł jest zainstalowany. Celowo
         // SŁABY sygnał: rozstrzyga remisy trafności, nie przebija jej. Produkt
         // z wyższym score nie wyprzedzi trafniejszego dopasowania, tylko
-        // wygrywa, gdy trafność jest taka sama. Bez modułu zapytanie działa
-        // dokładnie jak wcześniej, bez JOIN-a.
+        // wygrywa, gdy trafność jest taka sama. Bez modułu zapytanie idzie
+        // bez JOIN-a.
         $scoreJoin = '';
         $scoreOrder = '';
 
@@ -169,7 +167,7 @@ final class ProductFinder
                 $warunek = 'pl.name LIKE ' . $like;
                 break;
 
-            // Kod bywa wpisywany z myślnikami i spacjami, których w bazie nie ma —
+            // Kod bywa wpisywany z myślnikami i spacjami, których w bazie nie ma,
             // dlatego szukamy też po ciągu bez separatorów.
             case 'reference':
                 $goly = preg_replace('/[^a-z0-9]/i', '', $phrase);
@@ -201,7 +199,7 @@ final class ProductFinder
                 break;
 
             // Cecha bez wskazanego rodzaju szukałaby po wszystkich naraz, czyli
-            // po niczym konkretnym — zakres bez celu nie zwraca nic.
+            // po niczym konkretnym. Zakres bez celu nie zwraca nic.
             case 'feature':
                 if ($target <= 0) {
                     return [];
@@ -277,7 +275,7 @@ final class ProductFinder
             }
         }
 
-        // Jedno słowo krótsze od progu to zwykle kod albo skrót — szukamy po nim
+        // Jedno słowo krótsze od progu to zwykle kod albo skrót. Szukamy po nim
         // mimo wszystko, bo klient wpisał je świadomie.
         if (!$out && $words) {
             $out[] = $words[0];
@@ -299,7 +297,7 @@ final class ProductFinder
     /**
      * Dane do pokazania: nazwa, adres, miniatura, kategoria, cena.
      *
-     * Jedno zapytanie na cały zestaw — cena liczona osobno dla każdego produktu,
+     * Jedno zapytanie na cały zestaw; cena liczona osobno dla każdego produktu,
      * bo zna promocje, podatki i grupę klienta, a tego nie da się wyjąć jednym
      * złączeniem. Pozycji jest najwyżej kilkanaście, więc to kilkanaście tanich
      * wywołań, a nie zapytanie na produkt w pętli po całym katalogu.
@@ -363,7 +361,7 @@ final class ProductFinder
         return $out;
     }
 
-    /** Miniatura okładki, a gdy produkt jej nie ma — zastępczy obrazek sklepu. */
+    /** Miniatura okładki, a gdy produkt jej nie ma, zastępczy obrazek sklepu. */
     private function obrazek(Link $link, int $idImage, string $linkRewrite): string
     {
         if ($idImage > 0) {

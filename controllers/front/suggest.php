@@ -15,22 +15,20 @@ use Quince\Search\Settings\SearchSettings;
 /**
  * Podpowiedzi w trakcie pisania.
  *
- * Osobny, wąski punkt wejścia. Można było uderzyć w kontroler strony wyników,
- * bo w trybie AJAX oddaje JSON — ale oddaje w nim CAŁĄ stronę: wyrenderowany
- * listing, facety, paginację i sortowania. To dziesiątki kilobajtów i pełny
- * render szablonów na każde naciśnięcie klawisza, z czego podpowiedź bierze
- * sześć nazw, a resztę wyrzuca. Tutaj wychodzi tyle, ile wchodzi do listy.
+ * Osobny, wąski punkt wejścia. Kontroler strony wyników w trybie AJAX oddaje
+ * CAŁĄ stronę (wyrenderowany listing, facety, paginację i sortowania), czyli
+ * dziesiątki kilobajtów i pełny render szablonów na każde naciśnięcie klawisza.
+ * Tutaj wychodzi tyle, ile wchodzi do listy.
  *
- * Odpowiedź jest zawsze poprawnym JSON-em, także przy pustej frazie i przy
- * wyłączonych podpowiedziach — strona klienta ma jeden kształt do obsłużenia,
- * a nie osobną ścieżkę na każdy przypadek.
+ * Odpowiedź jest zawsze poprawnym JSON-em o tym samym kształcie, także przy
+ * pustej frazie i przy wyłączonych podpowiedziach.
  */
 class Quince_SearchSuggestModuleFrontController extends ModuleFrontController
 {
     /** @var bool nie ma tu nic do wyrenderowania poza JSON-em */
     public $ajax = true;
 
-    /** Klucz licznika w strażniku formularzy — osobny od formularzy sklepu. */
+    /** Klucz licznika w strażniku formularzy, osobny od formularzy sklepu. */
     private const LIMIT_KEY = 'quince_search_suggest';
 
     /** Ile podpowiedzi z jednego adresu w oknie poniżej. */
@@ -50,7 +48,7 @@ class Quince_SearchSuggestModuleFrontController extends ModuleFrontController
 
         // Podpowiedzi kosztują sklep zapytanie do bazy przy każdym naciśnięciu
         // klawisza, a pytającego jedno żądanie. Limit jest liberalny, bo za jednym
-        // adresem stoi czasem całe biuro — ma zatrzymać wyciąganie katalogu,
+        // adresem stoi czasem całe biuro. Ma zatrzymać wyciąganie katalogu,
         // a nie klienta, który szybko pisze. Odmowa wygląda jak brak wyników:
         // podpowiedzi są dodatkiem, nie ścieżką, którą trzeba przejść.
         $straznik = new \Quince\Engine\Form\FormGuard();
@@ -69,7 +67,7 @@ class Quince_SearchSuggestModuleFrontController extends ModuleFrontController
             $this->oddaj(['products' => [], 'query' => $fraza]);
         }
 
-        // Zakres nieznany albo pusty nie jest błędem — sklep szuka wtedy wszędzie.
+        // Zakres nieznany albo pusty nie jest błędem: sklep szuka wtedy wszędzie.
         $zakres = $settings->scopeByKey((string) Tools::getValue('scope'), $idLang);
 
         $produkty = (new ProductFinder())->find(

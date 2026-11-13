@@ -28,8 +28,7 @@ use Validate;
  * Strona wyników dla zawężonego zakresu.
  *
  * Wchodzi do gry tylko wtedy, gdy klient wybrał zakres inny niż „wszędzie".
- * Bez zakresu nie ma powodu podmieniać niczego — rdzeń ze swoim indeksem
- * i wagami pól robi to lepiej, niż zrobiłoby zapytanie pisane od nowa.
+ * Bez zakresu wyniki zostają przy rdzeniu, z jego indeksem i wagami pól.
  *
  * Zakres zawęża pulę produktów tą samą drogą co podpowiedzi (ProductFinder),
  * więc lista pod polem i strona po wciśnięciu Enter pokazują to samo. Rozjazd
@@ -89,7 +88,7 @@ final class ScopeSearchProvider implements ProductSearchProviderInterface
     /**
      * Pełne dane produktów w kolejności trafności.
      *
-     * Zestaw pól jest ten sam, którego używa wyszukiwanie rdzenia — prezenter
+     * Zestaw pól jest ten sam, którego używa wyszukiwanie rdzenia: prezenter
      * produktu oczekuje dokładnie tych kolumn, a brak choćby jednej kończy się
      * kartą bez ceny albo bez zdjęcia.
      *
@@ -140,15 +139,15 @@ final class ScopeSearchProvider implements ProductSearchProviderInterface
      *
      * Trafność nie jest tu jedną z opcji: zakres zawęża pulę do jednego pola,
      * więc wszystkie trafienia są tak samo trafne. Zostają kryteria, które
-     * naprawdę różnicują — nazwa i cena.
+     * naprawdę różnicują: nazwa i cena.
      *
      * @return SortOrder[]
      */
     private function sortowania(): array
     {
-        // Tłumaczy kontekst sklepu, nie `Tools::displayError()` — ta metoda
-        // w trybie deweloperskim RZUCA wyjątkiem zamiast oddać tekst, więc
-        // wywracała całą stronę wyników.
+        // Tłumaczy kontekst sklepu, nie `Tools::displayError()`: ta metoda
+        // w trybie deweloperskim RZUCA wyjątkiem zamiast oddać tekst
+        // i wywraca całą stronę wyników.
         $t = Context::getContext()->getTranslator();
 
         return [

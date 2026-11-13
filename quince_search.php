@@ -19,7 +19,7 @@ use PrestaShop\PrestaShop\Adapter\Presenter\Category\CategoryPresenter;
 use Quince\Search\Settings\SearchSettings;
 
 /**
- * Quince Search — wyszukiwarka z wyborem zakresu i podpowiedziami.
+ * Quince Search: wyszukiwarka z wyborem zakresu i podpowiedziami.
  *
  * Nakładka na wyszukiwanie rdzenia, nie jego zamiennik: PrestaShop zostaje przy
  * swoim indeksie i swoich regułach trafności, a moduł zawęża pulę wyników do
@@ -27,8 +27,7 @@ use Quince\Search\Settings\SearchSettings;
  *
  * Moduł zgłasza się silnikowi hookiem `actionQuinceRegisterFeature`. Dzięki temu
  * ustawienia motywu pokazują wyszukiwarkę na liście dopiero wtedy, gdy naprawdę
- * jest zainstalowana — a po odinstalowaniu sklep wraca do wyszukiwarki wbudowanej
- * zamiast zostać bez żadnej.
+ * jest zainstalowana, a po odinstalowaniu sklep wraca do wyszukiwarki wbudowanej.
  */
 class Quince_Search extends Module
 {
@@ -108,7 +107,7 @@ class Quince_Search extends Module
 
     /**
      * Zakresy dla pola wyszukiwania w nagłówku. Motyw dostaje gotową listę
-     * z nazwami rozwiązanymi dla bieżącego języka — w szablonie nic się nie liczy.
+     * z nazwami rozwiązanymi dla bieżącego języka. W szablonie nic się nie liczy.
      *
      * @return array<string,mixed>
      */
@@ -143,8 +142,7 @@ class Quince_Search extends Module
      *
      * Wskazówki i nagłówek pisze sklep, kategorie wskazuje z katalogu. Kafelki
      * przedstawiamy tym samym prezenterem co podkategorie, bo rysuje je ten sam
-     * kawałek motywu — inaczej te same kategorie wyglądałyby na dwóch stronach
-     * inaczej.
+     * kawałek motywu.
      *
      * @return array<string,mixed>
      */
@@ -201,11 +199,11 @@ class Quince_Search extends Module
     /**
      * Pierwsze miejsce w kolejce dostawców wyszukiwania.
      *
-     * Rdzeń pyta wszystkie moduły i bierze PIERWSZĄ odpowiedź różną od null —
-     * nie najlepszą, tylko pierwszą. Filtrowanie (`ps_facetedsearch`) zgłasza się
+     * Rdzeń pyta wszystkie moduły i bierze PIERWSZĄ odpowiedź różną od null,
+     * nie najlepszą. Filtrowanie (`ps_facetedsearch`) zgłasza się
      * do tego samego haka i stojąc wcześniej odbierałoby nam każde pytanie.
      * Stajemy więc przed nim i oddajemy głos przy każdym pytaniu, które nas nie
-     * dotyczy — czyli wszędzie tam, gdzie klient nie zawęził zakresu.
+     * dotyczy, czyli wszędzie tam, gdzie klient nie zawęził zakresu.
      */
     private function pierwszyWSzukaniu(): bool
     {

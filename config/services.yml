@@ -8,7 +8,7 @@ services:
     # (`class X extends FrameworkBundleAdminController`) i dopiero wtedy dokłada im
     # tagi, dzięki którym Symfony podaje kontrolerowi jego lokalizator usług.
     # Nasze kontrolery dziedziczą po wspólnej klasie silnika, więc ten wzorzec
-    # nie pasuje — deklarujemy to sami zamiast liczyć na wykrycie.
+    # nie pasuje. Tagi deklarujemy więc sami.
     autoconfigure: true
     autowire: true
     tags: ['controller.service_arguments']

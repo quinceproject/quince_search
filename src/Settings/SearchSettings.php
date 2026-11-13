@@ -21,8 +21,7 @@ use Quince\Engine\Settings\ConfigStore;
  * w trakcie pisania) i strona pustych wyników (co widzi klient, który nie znalazł).
  *
  * Zakresy i pusta strona idą jako wpisy JSON, nie jako osobne klucze konfiguracji.
- * Zakresów jest dowolnie wiele i mają wspólną strukturę — przy osobnych kluczach
- * dołożenie szóstego oznaczałoby pięć nowych nazw do wymyślenia i pilnowania.
+ * Zakresów jest dowolnie wiele i mają wspólną strukturę.
  */
 final class SearchSettings
 {
@@ -35,14 +34,14 @@ final class SearchSettings
 
     /**
      * Typy zakresów. Nazwa typu jest zaszyta w kodzie, bo do każdego przypisane
-     * jest inne zapytanie do bazy — sprzedawca decyduje, których użyć i jak je
+     * jest inne zapytanie do bazy. Sprzedawca decyduje, których użyć i jak je
      * nazwać, a nie skąd biorą dane.
      *
      * @var string[]
      */
     public const TYPES = ['all', 'name', 'reference', 'category', 'manufacturer', 'feature'];
 
-    /** Typy wymagające wskazania konkretnego obiektu — dziś tylko cecha produktu. */
+    /** Typy wymagające wskazania konkretnego obiektu (cecha produktu). */
     public const TYPES_WITH_TARGET = ['feature'];
 
     /** @var array<string,string> */
@@ -70,8 +69,8 @@ final class SearchSettings
         $out = [];
 
         // Wartość domyślna wchodzi wyłącznie wtedy, gdy klucza nie ma w konfiguracji.
-        // Pusty napis jest wyborem administratora — tak zapisuje się „bez ikony" —
-        // i podmiana go na wartość domyślną przywracałaby skasowaną ikonę przy odczycie.
+        // Pusty napis jest wyborem administratora (tak zapisuje się „bez ikony"),
+        // a podmiana go na wartość domyślną przywracałaby skasowaną ikonę przy odczycie.
         foreach (self::SCHEMA as $key => $default) {
             $value = Configuration::get(self::PREFIX . $key);
             $out[$key] = ($value === false || $value === null) ? $default : (string) $value;
@@ -142,8 +141,8 @@ final class SearchSettings
     /**
      * Nazwa zakresu, kiedy sklep swojej nie wpisał.
      *
-     * Idzie przez tłumacza sklepu, a nie prosto ze stałej — inaczej polski sklep
-     * pokazuje przy polu wyszukiwania „Everywhere", choć nikt tego nie wybrał.
+     * Idzie przez tłumacza sklepu, a nie prosto ze stałej. Inaczej polski sklep
+     * pokazuje przy polu wyszukiwania „Everywhere".
      */
     private function defaultLabel(string $type): string
     {
@@ -157,7 +156,7 @@ final class SearchSettings
         return $context->getTranslator()->trans($etykieta, [], 'Modules.Quincesearch.Shop');
     }
 
-    /** Zakres wskazany w adresie. Nieznany klucz nie jest błędem — sklep szuka wszędzie. */
+    /** Zakres wskazany w adresie. Nieznany klucz nie jest błędem: sklep szuka wszędzie. */
     public function scopeByKey(string $key, int $idLang): ?array
     {
         foreach ($this->activeScopes($idLang) as $scope) {
@@ -277,7 +276,7 @@ final class SearchSettings
             }
 
             // Klucz trafia do adresu, więc musi być jednoznaczny i bez znaków
-            // wymagających kodowania. Pusty albo powtórzony dostaje własny numer —
+            // wymagających kodowania. Pusty albo powtórzony dostaje własny numer:
             // dwa zakresy o tym samym kluczu znaczyłyby, że jednego nie da się wybrać.
             $key = $this->slug((string) ($row['key'] ?? ''), $type);
 
@@ -331,7 +330,7 @@ final class SearchSettings
 
     /**
      * Klucz do adresu. Zamiana idzie przez `Tools::str2url()`, bo ta funkcja
-     * przepisuje znaki narodowe na łacińskie — własne wycinanie zamieniłoby
+     * przepisuje znaki narodowe na łacińskie. Własne wycinanie zamieniłoby
      * „Wszędzie" na „wsz-dzie", czyli na klucz, którego nikt nie rozpozna.
      */
     private function slug(string $value, string $fallback): string
