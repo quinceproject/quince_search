@@ -101,6 +101,11 @@ $stub = <<<'PHP'
  * @copyright Since 2026 Marcin Gajewski
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
+// Wczytany przez inny skrypt (np. API Platform skanuje src/ApiPlatform/Resources
+// przy budowie kontenera panelu) nie może przekierować ani zakończyć procesu.
+if (realpath((string) ($_SERVER['SCRIPT_FILENAME'] ?? '')) !== __FILE__) {
+    return;
+}
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Cache-Control: no-store, no-cache, must-revalidate');
