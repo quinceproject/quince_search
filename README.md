@@ -72,15 +72,22 @@ command line are not required.
 2. Upload that folder to the `modules/` directory of the shop, for example by FTP.
 3. In **Modules → Module Manager** find Quince Search and click **Install**.
 
-**From Quince Engine** *(coming soon)*
+**From Quince Engine**
 
-The module list in Quince Engine will install the module straight from its release,
-without downloading anything by hand.
+With Quince Engine installed, **Quince project → Quince modules** installs and updates
+this module from the Quince release list, without downloading anything by hand.
 
-**With Composer** *(coming soon)*
+**With Composer**
 
-Installing with `composer require quinceproject/search` will work once the package is
-published on Packagist.
+A PrestaShop shop ships without a `composer.json` of its own, so Quince packages are
+installed from a separate folder next to the shop. The one-time setup of that folder is
+described in the [Quince Engine README](https://github.com/quinceproject/quince_engine#installation).
+Then, from that folder:
+
+```sh
+composer require "quinceproject/search:*"
+php ../bin/console prestashop:module install quince_search
+```
 
 > ⚠️ **Do not** use the green **Code → Download ZIP** button on this page. That
 > archive contains the source only and is **missing the `vendor/` folder**, so the
