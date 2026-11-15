@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Quince\Search\Search;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Combination;
 use Configuration;
 use Context;

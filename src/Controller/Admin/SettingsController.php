@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Quince\Search\Controller\Admin;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Db;
 use PrestaShopBundle\Security\Attribute\AdminSecurity;
 use Quince\Engine\Controller\Admin\QuinceController;
