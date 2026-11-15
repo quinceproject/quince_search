@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Quince\Search\Controller\Admin;
 
 use Db;
+use PrestaShopBundle\Security\Attribute\AdminSecurity;
 use Quince\Engine\Controller\Admin\QuinceController;
 use Quince\Search\Settings\SearchSettings;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -30,6 +31,7 @@ class SettingsController extends QuinceController
     {
     }
 
+    #[AdminSecurity("is_granted('read', request.get('_legacy_controller'))", message: 'You do not have permission to view this.')]
     public function indexAction(): Response
     {
         $idLang = (int) $this->getContext()->language->id;
@@ -52,6 +54,7 @@ class SettingsController extends QuinceController
         ]);
     }
 
+    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", message: 'You do not have permission to change this.')]
     public function saveAction(Request $request): RedirectResponse
     {
         if (!$this->isCsrfTokenValid('quince_search_settings_save', $request->request->get('_csrf_token'))) {
