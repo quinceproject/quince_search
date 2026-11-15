@@ -35,7 +35,7 @@ class Quince_Search extends Module
     {
         $this->name = 'quince_search';
         $this->tab = 'front_office_features';
-        $this->version = '0.1.2';
+        $this->version = '0.1.3';
         $this->author = 'Quince Project';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = ['min' => '9.0.0', 'max' => '9.99.99'];
@@ -204,12 +204,45 @@ class Quince_Search extends Module
      * do tego samego haka i stojąc wcześniej odbierałoby nam każde pytanie.
      * Stajemy więc przed nim i oddajemy głos przy każdym pytaniu, które nas nie
      * dotyczy, czyli wszędzie tam, gdzie klient nie zawęził zakresu.
+     *
+     * Kolejność ustawiamy wprost, w każdym sklepie z kontekstu. `updatePosition()`
+     * rdzenia zwraca false, gdy moduł w którymś sklepie już jest pierwszy, np. jako
+     * jedyny podpięty pod hak, i przerywa na nim pętlę po sklepach. Przy instalacji
+     * dla wszystkich sklepów to wywracało całą instalację.
      */
     private function pierwszyWSzukaniu(): bool
     {
         $idHook = (int) Hook::getIdByName('productSearchProvider');
 
-        return $idHook <= 0 || $this->updatePosition($idHook, false, 1);
+        if ($idHook <= 0) {
+            return true;
+        }
+
+        $db = Db::getInstance();
+        $table = _DB_PREFIX_ . 'hook_module';
+
+        foreach (Shop::getContextListShopID() as $idShop) {
+            $where = 'id_hook = ' . $idHook . ' AND id_shop = ' . (int) $idShop;
+            $position = (int) $db->getValue(
+                'SELECT position FROM `' . $table . '` WHERE ' . $where . ' AND id_module = ' . (int) $this->id
+            );
+
+            if ($position <= 1) {
+                continue;
+            }
+
+            $ok = $db->execute(
+                'UPDATE `' . $table . '` SET position = position + 1 WHERE ' . $where . ' AND position < ' . $position
+            ) && $db->execute(
+                'UPDATE `' . $table . '` SET position = 1 WHERE ' . $where . ' AND id_module = ' . (int) $this->id
+            );
+
+            if (!$ok) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
