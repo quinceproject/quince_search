@@ -14,6 +14,7 @@ namespace Quince\Search\Search;
 use Configuration;
 use Context;
 use Db;
+use Group;
 use Language;
 use Link;
 use Module;
@@ -312,8 +313,10 @@ final class ProductFinder
 
         $sql = 'SELECT p.id_product, pl.name, pl.link_rewrite, p.id_category_default,
                    cl.name AS kategoria, cl.link_rewrite AS kategoria_url,
-                   im.id_image
+                   im.id_image, ps.show_price
             FROM ' . _DB_PREFIX_ . 'product p
+            INNER JOIN ' . _DB_PREFIX_ . 'product_shop ps
+                ON ps.id_product = p.id_product AND ps.id_shop = ' . (int) $idShop . '
             INNER JOIN ' . _DB_PREFIX_ . 'product_lang pl
                 ON pl.id_product = p.id_product AND pl.id_lang = ' . (int) $idLang . '
                 AND pl.id_shop = ' . (int) $idShop . '
@@ -334,6 +337,10 @@ final class ProductFinder
         $locale = Context::getContext()->getCurrentLocale();
         $waluta = Context::getContext()->currency->iso_code;
 
+        // Sklep, który ukrywa ceny (tryb katalogowy albo grupa klienta bez cen),
+        // nie może ich zdradzać w podpowiedziach.
+        $cenyWidoczne = !Configuration::isCatalogMode() && (bool) Group::getCurrent()->show_prices;
+
         $out = [];
 
         // Kolejność bierzemy z listy numerów, nie z zapytania: to ona niesie trafność.
@@ -343,9 +350,16 @@ final class ProductFinder
             }
 
             $w = $dane[$id];
+            $cenaFormat = '';
+            $przedFormat = '';
 
-            $cena = (float) Product::getPriceStatic($id, true, null, 2);
-            $przed = (float) Product::getPriceStatic($id, true, null, 2, null, false, false);
+            // Produkt z wyłączonym „pokaż cenę" też idzie bez ceny.
+            if ($cenyWidoczne && (int) $w['show_price'] === 1) {
+                $cena = (float) Product::getPriceStatic($id, true, null, 2);
+                $przed = (float) Product::getPriceStatic($id, true, null, 2, null, false, false);
+                $cenaFormat = $locale !== null ? $locale->formatPrice($cena, $waluta) : (string) $cena;
+                $przedFormat = $przed > $cena && $locale !== null ? $locale->formatPrice($przed, $waluta) : '';
+            }
 
             $out[] = [
                 'id' => $id,
@@ -353,8 +367,8 @@ final class ProductFinder
                 'url' => $link->getProductLink($id, $w['link_rewrite'], (int) $w['id_category_default'], null, $idLang),
                 'image' => $this->obrazek($link, (int) $w['id_image'], (string) $w['link_rewrite']),
                 'category' => (string) ($w['kategoria'] ?? ''),
-                'price' => $locale !== null ? $locale->formatPrice($cena, $waluta) : (string) $cena,
-                'price_before' => $przed > $cena && $locale !== null ? $locale->formatPrice($przed, $waluta) : '',
+                'price' => $cenaFormat,
+                'price_before' => $przedFormat,
             ];
         }
 

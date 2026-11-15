@@ -9,6 +9,10 @@
 
 declare(strict_types=1);
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Quince\Search\Search\ProductFinder;
 use Quince\Search\Settings\SearchSettings;
 
